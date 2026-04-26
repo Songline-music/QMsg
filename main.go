@@ -9,6 +9,7 @@ import (
 	"QMsg/text"
 	"QMsg/ui"
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -16,6 +17,17 @@ import (
 
 // 程序入口
 func main() {
+	modeFlag := flag.String("mode", "", "启动模式: server 或 client")
+	addrFlag := flag.String("addr", "", "服务端监听地址或客户端连接地址")
+	nameFlag := flag.String("name", "", "客户端用户名")
+	tokenFlag := flag.String("token", "", "房间密码")
+	flag.Parse()
+
+	if *modeFlag != "" {
+		runFlagMode(*modeFlag, *addrFlag, *nameFlag, *tokenFlag)
+		return
+	}
+
 	// reader 对象读取用户输入
 	reader := bufio.NewReader(os.Stdin)
 
@@ -44,6 +56,60 @@ func main() {
 			fmt.Println("模式输入错误,请重新输入")
 			ui.WaitEnter()
 		}
+	}
+}
+
+// 通过命令行参数启动
+func runFlagMode(mode string, address string, name string, token string) {
+	switch strings.ToLower(mode) {
+	case "server", "1":
+		if address == "" {
+			address = ":9000"
+		}
+
+		if strings.TrimSpace(token) == "" {
+			fmt.Println("服务端启动失败: 房间密码不能为空")
+			return
+		}
+
+		server.RunServer(address, token)
+
+	case "client", "2":
+		cfg, hasConfig := config.LoadConfig()
+		if hasConfig {
+			cfg = config.NormalizeConfig(cfg)
+		} else {
+			cfg = config.Config{
+				ServerAddress: config.DefaultServerAddress,
+				Username:      "匿名用户",
+			}
+		}
+
+		if address != "" {
+			cfg.ServerAddress = address
+		}
+		if name != "" {
+			cfg.Username = name
+		}
+		if token != "" {
+			cfg.Token = token
+		}
+
+		cfg = config.NormalizeConfig(cfg)
+
+		if cfg.Username == "" {
+			cfg.Username = "匿名用户"
+		}
+
+		if !config.IsClientConfigReady(cfg) {
+			fmt.Println("客户端启动失败: 缺少服务端地址或房间密码")
+			return
+		}
+
+		connectClient(cfg)
+
+	default:
+		fmt.Println("未知启动模式: " + mode)
 	}
 }
 
