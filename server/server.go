@@ -56,7 +56,7 @@ func listenServerCommands(listener net.Listener, shutdown chan struct{}) {
 		fmt.Print("server > ")
 		command, err := input.ReadString('\n')
 		if err != nil {
-			continue
+			return
 		}
 
 		ui.ClearCurrentLine()

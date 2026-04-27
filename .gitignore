@@ -1,0 +1,5 @@
+config.json
+config.example.json
+QMsg
+QMsg.exe
+*.log
