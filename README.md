@@ -31,30 +31,13 @@ QMsg/
 
 ## 本地运行
 
-先编译：
-
-```bash
-go build -o qmsg
-```
-
-运行：
-
-```bash
-./qmsg
-```
-
-Windows 下可以是：
-
-```powershell
-go build -o qmsg.exe
-.\qmsg.exe
-```
+双击运行：
 
 启动后可以选择：
 
 ```text
-1. 服务端
-2. 客户端
+1. 客户端
+2. 服务端
 ```
 
 服务端监听地址通常使用：
@@ -146,17 +129,6 @@ go build -o qmsg
 ```
 
 后续计划改成 `systemd` 后台运行，实现开机自启和崩溃自动重启。
-
-## 未完成计划
-
-- 命令行参数启动，例如 `./qmsg -mode server -addr :9000 -token xxx`
-- systemd 后台运行
-- 更安全的密码输入方式
-- 更完善的断线重连
-- 服务端踢人和管理命令
-- 聊天记录保存
-- 账号系统
-- 更完整的图形界面或 Web 界面
 
 ## 注意
 
