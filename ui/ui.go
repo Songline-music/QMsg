@@ -8,6 +8,13 @@ import (
 	"os"
 )
 
+var serverPromptEnabled = true
+
+// 设置服务端日志后是否重新显示命令提示符
+func SetServerPromptEnabled(enabled bool) {
+	serverPromptEnabled = enabled
+}
+
 // 控制台清屏
 func ClearScreen() {
 	fmt.Print("\033[H\033[2J") // ANSI 清屏
@@ -25,9 +32,13 @@ func PrintServerLog(message string) { // 主动出发指令输出
 	fmt.Println(message)
 }
 func PrintServerAsyncLog(message string) { // 异步函数(系统事件触发)
-	fmt.Printf("\r\033[2K")
+	if serverPromptEnabled {
+		fmt.Printf("\r\033[2K")
+	}
 	fmt.Println(message)
-	fmt.Print("server > ")
+	if serverPromptEnabled {
+		fmt.Print("server > ")
+	}
 }
 
 // 等待用户按回车继续
@@ -43,12 +54,6 @@ func PrintTitle(title string) {
 	fmt.Println(" " + title)
 	fmt.Println("--------------------------------")
 }
-func PrintError(message string) {
-	fmt.Println("[错误] " + message)
-}
 func PrintSystem(message string) {
 	fmt.Println("[系统] " + message)
-}
-func PrintChat(message string) {
-	fmt.Println(message)
 }

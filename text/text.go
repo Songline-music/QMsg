@@ -8,30 +8,49 @@ import "strings"
 func BuildMenuText() string {
 	return strings.TrimSpace(`
 ------------- QMsg -------------
-提示:
-  输入 help 查看帮助
+1. 启动客户端
+2. 启动服务端
+3. 查看帮助
+0. 退出程序
 --------------------------------
 `)
 }
 
-// 帮助页面打印
-func BuildHelpText() string {
+// 选择界面帮助
+func BuildMenuHelpText() string {
 	return strings.TrimSpace(`
 ------------- help -------------
 启动阶段:
-  1 或 server       启动服务端
-  2 或 client       启动客户端
-  help 或 /help     查看帮助
+  1 或 client       启动客户端
+  2 或 server       启动服务端
+  3 或 /help        查看帮助
+  0 或 exit         退出程序
+--------------------------------
+`)
+}
 
+// 客户端帮助
+func BuildClientHelpText() string {
+	return strings.TrimSpace(`
+------------- client help -------------
 聊天阶段:
   普通文字          发送群聊消息
   /users            查看当前在线用户
   @用户名 消息      给指定用户发送私聊
-  help 或 /help     查看帮助
-  exit              退出聊天
-  /multi            进入多行输入模式
-  /send             多行输入模式中发送
-  /cancel           多行输入模式中取消
+  /help             查看帮助
+  Esc 或 Ctrl+C     退出聊天
+  /exit             退出聊天
+--------------------------------
+`)
+}
+
+// 服务端帮助
+func BuildServerHelpText() string {
+	return strings.TrimSpace(`
+------------- server help -------------
+服务端命令:
+  /help             查看帮助
+  /shutdown         关闭服务端
 --------------------------------
 `)
 }

@@ -4,6 +4,7 @@ package server
 
 import (
 	"QMsg/protocol"
+	"QMsg/text"
 	"QMsg/ui"
 	"bufio"
 	"fmt"
@@ -13,7 +14,9 @@ import (
 )
 
 // 运行服务器
-func RunServer(address string, token string) {
+func RunServer(address string, token string, interactive bool) {
+	ui.SetServerPromptEnabled(interactive)
+
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		fmt.Println("监听失败 ", err)
@@ -21,14 +24,20 @@ func RunServer(address string, token string) {
 	}
 	defer listener.Close()
 
-	ui.ClearScreen()
-	ui.PrintTitle("QMsg 服务端")
+	if interactive {
+		ui.ClearScreen()
+		ui.PrintTitle("QMsg 服务端")
+	}
 	ui.PrintSystem("服务端已启动,监听地址 " + address)
 	ui.PrintSystem("等待客户端连接...")
-	fmt.Println()
+	if interactive {
+		fmt.Println()
+	}
 
 	shutdown := make(chan struct{})
-	go listenServerCommands(listener, shutdown)
+	if interactive {
+		go listenServerCommands(listener, shutdown)
+	}
 
 	for {
 		conn, err := listener.Accept()
@@ -69,11 +78,11 @@ func listenServerCommands(listener net.Listener, shutdown chan struct{}) {
 			listener.Close()
 			return
 		case "help", "/help":
-			ui.PrintServerLog("服务端命令: exit 或 /shutdown 关闭服务端,help 或 /help 查看帮助")
+			ui.PrintServerLog(text.BuildServerHelpText())
 		case "":
 			continue
 		default:
-			fmt.Println("未知服务端指令,输入 help 查看帮助")
+			fmt.Println("未知服务端指令,输入 /help 查看帮助")
 		}
 	}
 }

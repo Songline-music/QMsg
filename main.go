@@ -36,18 +36,18 @@ func main() {
 		ui.ClearScreen()
 		fmt.Println(text.BuildMenuText())
 
-		mode := readLine(reader, "请选择模式(1.服务端, 2.客户端, help.帮助): ")
+		mode := readLine(reader, "请选择操作(1/2/3/0): ")
 
 		switch strings.ToLower(mode) {
-		case "1", "server":
-			runServerMode(reader)
-		case "2", "client":
+		case "1", "client":
 			runClientMode(reader)
-		case "help", "/help":
+		case "2", "server":
+			runServerMode(reader)
+		case "3", "help", "/help":
 			ui.ClearScreen()
-			fmt.Println(text.BuildHelpText())
+			fmt.Println(text.BuildMenuHelpText())
 			ui.WaitEnter()
-		case "exit":
+		case "0", "exit", "quit":
 			fmt.Println("程序已退出")
 			ui.WaitEnter()
 			return
@@ -62,7 +62,7 @@ func main() {
 // 通过命令行参数启动
 func runFlagMode(mode string, address string, name string, token string) {
 	switch strings.ToLower(mode) {
-	case "server", "1":
+	case "server", "2":
 		if address == "" {
 			address = ":9000"
 		}
@@ -72,9 +72,9 @@ func runFlagMode(mode string, address string, name string, token string) {
 			return
 		}
 
-		server.RunServer(address, token)
+		server.RunServer(address, token, false)
 
-	case "client", "2":
+	case "client", "1":
 		cfg, hasConfig := config.LoadConfig()
 		if hasConfig {
 			cfg = config.NormalizeConfig(cfg)
@@ -120,7 +120,7 @@ func runServerMode(reader *bufio.Reader) {
 
 	token := readRequiredLine(reader, "请设置房间密码: ")
 
-	server.RunServer(address, token)
+	server.RunServer(address, token, true)
 	ui.WaitEnter()
 }
 
@@ -176,6 +176,7 @@ func connectClient(cfg config.Config) {
 	if ok {
 		cfg.Username = name
 		config.SaveConfig(cfg)
+		return
 	}
 
 	ui.WaitEnter()

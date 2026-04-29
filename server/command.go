@@ -86,17 +86,17 @@ func sendPrivateMessage(from *Client, message string) {
 // 处理命令
 func handleCommand(client *Client, command string) {
 	switch command {
-	case "help", "/help":
+	case "/help":
 		sendToClient(client, protocol.Message{
 			Type:    protocol.MessageText,
-			Content: text.BuildHelpText(),
+			Content: text.BuildClientHelpText(),
 		})
 	case "/users":
 		sendUserList(client)
 	default:
 		sendToClient(client, protocol.Message{
 			Type:    protocol.MessageError,
-			Content: "未知命令",
+			Content: "未知命令,输入 /help 查看帮助",
 		})
 	}
 }
