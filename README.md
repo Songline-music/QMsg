@@ -25,6 +25,7 @@ QMsg/
   protocol/    消息结构体和 JSON 读写
   server/      服务端监听、登录校验、会话管理、命令处理
   text/        菜单和帮助文本
+  tui/         控制台显示处理
   ui/          控制台显示相关函数
   main.go      程序入口
 ```
